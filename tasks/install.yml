@@ -1,0 +1,28 @@
+- name: check for backports
+  fail:
+    msg: 'Enable backports in apt role'
+  when: ansible_distribution_release == 'buster' and _zfs_apt_include_backports == False
+
+- name: configure backports
+  template:
+    src: apt-prefs.j2
+    dest: /etc/apt/preferences.d/90_zfs
+  notify: apt update
+  when: ansible_distribution_release == 'buster'
+
+- name: install zfs-dkms build dependencies debian
+  package:
+    pkg:
+      - dpkg-dev
+      - linux-headers-amd64
+      - linux-image-amd64
+  when: ansible_distribution|lower == 'debian'
+
+- name: install zfs-dkms debian
+  package:
+    pkg: zfs-dkms
+  when: ansible_distribution|lower == 'debian'
+
+- name: install zfs
+  package:
+    pkg: zfsutils-linux

@@ -1,0 +1,48 @@
+- name: configure zfs module options
+  template:
+    src: modprobe.j2
+    dest: /etc/modprobe.d/zfs.conf
+  when: zfs_module_config_arc_max_gb != 0
+  register: _zfs_task_configure_zfs_module_options
+
+- name: cleanup zfs module options
+  file:
+    path: /etc/modprobe.d/zfs.conf
+    state: absent
+  when: zfs_module_config_arc_max_gb == 0
+  register: _zfs_task_cleanup_zfs_module_options
+
+- name: modprobe zfs
+  modprobe:
+    name: zfs
+    state: present
+
+- name: apply zfs module options at runtime
+  command: 'echo "{{ _zfs_module_config_arc_max }}" > /sys/module/zfs/parameters/zfs_arc_max'
+  when: _zfs_task_configure_zfs_module_options.changed or _zfs_task_cleanup_zfs_module_options.changed
+
+- name: set fact _zfs_zpools
+  set_fact:
+    _zfs_zpools: "{{ _zfs_zpools + [_zfs_zpool] }}"
+  vars:
+    _zfs_zpool:
+      name: '{{ item.name|default(zfs_zpool_prefix + ansible_loop.index0|string) }}'
+      ashift: '{{ item.ashift|default(zfs_zpool_ashift) }}'
+      mount: "{{ item.mount|default('none') }}"
+      config: '{{ item.config }}'
+  loop: '{{ zfs_zpools }}'
+  loop_control:
+    extended: yes
+    label: "{{ item.name|default(zfs_zpool_prefix + ansible_loop.index0|string) }}"
+
+- name: debug _zfs_zpools
+  debug:
+    msg: "{{ _zfs_zpools }}"
+
+- name: create zpools
+  command: 'zpool create -o ashift={{ item.ashift }} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
+  args:
+    creates: '/proc/spl/kstat/zfs/{{ item.name }}/state'
+  loop: '{{ _zfs_zpools }}'
+
+# TODO: apply pool default settings, create zfs filesystems

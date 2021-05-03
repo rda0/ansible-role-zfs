@@ -1,0 +1,11 @@
+- block:
+
+    - import_tasks: install.yml
+      tags: zfs_install
+      when: import_zfs_install
+
+    - import_tasks: config.yml
+      tags: zfs_config
+      when: import_zfs_config
+
+  tags: zfs

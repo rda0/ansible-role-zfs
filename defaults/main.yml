@@ -1,0 +1,21 @@
+import_zfs_install: True
+import_zfs_config: True
+
+# In GiB, 0 disables the limit
+zfs_module_config_arc_max_gb: 0
+
+zfs_zpool_prefix: zp
+zfs_zpool_ashift: 13
+
+zfs_zfs_params: []
+#  - atime=off
+#  - xattr=off
+#  - compression=lz4
+#  - recordsize=128k
+
+zfs_zpools: []
+
+# Internal variables
+_zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb*1024**3)|int|abs }}'
+_zfs_apt_include_backports: '{{ apt_include_backports|default(False) }}'
+_zfs_zpools: []
