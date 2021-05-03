@@ -1,21 +1,42 @@
 import_zfs_install: True
 import_zfs_config: True
 
-# In GiB, 0 disables the limit
+# In GiB, `0` uses the default (1/2 of ram)
 zfs_module_config_arc_max_gb: 0
 
 zfs_zpool_prefix: zp
 zfs_zpool_ashift: 13
 
-zfs_zfs_params: []
-#  - atime=off
-#  - xattr=off
-#  - compression=lz4
-#  - recordsize=128k
+# zpool defaults
+zfs_zpool_props: []
+# see `man zpoolprops`, example:
+#  - autoexpand=on
+#  - autoreplace=on
+#  - autotrim=on
+
+# dataset defaults
+zfs_dataset_props: {}
+# see `man zfsprops`, example:
+#  atime: off
+#  xattr: off
+#  compression: lz4
+#  recordsize: 8k
 
 zfs_zpools: []
+#  - name: zp0
+#    ashift: 13
+#    props: '{{ zfs_zpool_props }}'
+#    mount: none                            (do not mount zpools, mount datasets instead)
+#    config: mirror sda sdb mirror sdc sdd  (required)
+
+zfs_datasets: []
+#  - name: zfs0                             (required)
+#    zpool: zp0                             (required if not zp0)
+#    mount: /var/opt/zfs0                   (required)
+#    props: '{{ zfs_dataset_props }}'
 
 # Internal variables
 _zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb*1024**3)|int|abs }}'
 _zfs_apt_include_backports: '{{ apt_include_backports|default(False) }}'
 _zfs_zpools: []
+_zfs_datasets: []

@@ -28,6 +28,7 @@
     _zfs_zpool:
       name: '{{ item.name|default(zfs_zpool_prefix + ansible_loop.index0|string) }}'
       ashift: '{{ item.ashift|default(zfs_zpool_ashift) }}'
+      props: '{{ item.props|default(zfs_zpool_props) }}'
       mount: "{{ item.mount|default('none') }}"
       config: '{{ item.config }}'
   loop: '{{ zfs_zpools }}'
@@ -40,9 +41,31 @@
     msg: "{{ _zfs_zpools }}"
 
 - name: create zpools
-  command: 'zpool create -o ashift={{ item.ashift }} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
+  command: 'zpool create -o ashift={{ item.ashift }}{% for prop in item.props %} -o {{ prop }}{% endfor %} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
   args:
     creates: '/proc/spl/kstat/zfs/{{ item.name }}/state'
   loop: '{{ _zfs_zpools }}'
 
-# TODO: apply pool default settings, create zfs filesystems
+- name: set fact _zfs_datasets
+  set_fact:
+    _zfs_datasets: "{{ _zfs_datasets + [_zfs_dataset] }}"
+  vars:
+    _zfs_dataset:
+      name: '{{ item.name }}'
+      zpool: '{{ item.zpool|default(zfs_zpool_prefix + 0|string) }}'
+      props: "{{ (item.props|default(zfs_dataset_props))|combine({'mountpoint':item.mount|default('none')}) }}"
+  loop: '{{ zfs_datasets }}'
+  loop_control:
+    extended: yes
+    label: "{{ item.name }}"
+
+- name: debug _zfs_datasets
+  debug:
+    msg: "{{ _zfs_datasets }}"
+
+- name: create datasets
+  zfs:
+    name: '{{ item.zpool }}/{{ item.name }}'
+    state: present
+    extra_zfs_properties: '{{ item.props }}'
+  loop: '{{ _zfs_datasets }}'
