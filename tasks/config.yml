@@ -21,30 +21,31 @@
   command: 'echo "{{ _zfs_module_config_arc_max }}" > /sys/module/zfs/parameters/zfs_arc_max'
   when: _zfs_task_configure_zfs_module_options.changed or _zfs_task_cleanup_zfs_module_options.changed
 
-- name: set fact _zfs_zpools
+- name: set fact _zfs_pools
   set_fact:
-    _zfs_zpools: "{{ _zfs_zpools + [_zfs_zpool] }}"
+    _zfs_pools: "{{ _zfs_pools + [_zfs_pool] }}"
   vars:
-    _zfs_zpool:
-      name: '{{ item.name|default(zfs_zpool_prefix + ansible_loop.index0|string) }}'
-      ashift: '{{ item.ashift|default(zfs_zpool_ashift) }}'
-      props: '{{ item.props|default(zfs_zpool_props) }}'
+    _zfs_pool:
+      name: '{{ item.name|default(zfs_pool_prefix + ansible_loop.index0|string) }}'
+      ashift: '{{ item.ashift|default(zfs_pool_ashift) }}'
+      pool_props: '{{ item.pool_props|default(zfs_pool_props) }}'
+      fs_props: '{{ item.fs_props|default(zfs_fs_props) }}'
       mount: "{{ item.mount|default('none') }}"
       config: '{{ item.config }}'
-  loop: '{{ zfs_zpools }}'
+  loop: '{{ zfs_pools }}'
   loop_control:
     extended: yes
-    label: "{{ item.name|default(zfs_zpool_prefix + ansible_loop.index0|string) }}"
+    label: "{{ item.name|default(zfs_pool_prefix + ansible_loop.index0|string) }}"
 
-- name: debug _zfs_zpools
+- name: debug _zfs_pools
   debug:
-    msg: "{{ _zfs_zpools }}"
+    msg: "{{ _zfs_pools }}"
 
-- name: create zpools
-  command: 'zpool create -o ashift={{ item.ashift }}{% for prop in item.props %} -o {{ prop }}{% endfor %} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
+- name: create pools
+  command: 'zpool create -o ashift={{ item.ashift }}{% for k, v in item.pool_props.items() %} -o {{ k }}={{ v }}{% endfor %}{% for k, v in item.fs_props.items() %} -O {{ k }}={{ v }}{% endfor %} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
   args:
     creates: '/proc/spl/kstat/zfs/{{ item.name }}/state'
-  loop: '{{ _zfs_zpools }}'
+  loop: '{{ _zfs_pools }}'
 
 - name: set fact _zfs_datasets
   set_fact:
@@ -52,8 +53,8 @@
   vars:
     _zfs_dataset:
       name: '{{ item.name }}'
-      zpool: '{{ item.zpool|default(zfs_zpool_prefix + 0|string) }}'
-      props: "{{ (item.props|default(zfs_dataset_props))|combine({'mountpoint':item.mount|default('none')}) }}"
+      pool: '{{ item.pool|default(zfs_pool_prefix + 0|string) }}'
+      fs_props: "{{ (item.fs_props|default(zfs_fs_props))|combine({'mountpoint':item.mount|default('none')}) }}"
   loop: '{{ zfs_datasets }}'
   loop_control:
     extended: yes
@@ -65,7 +66,7 @@
 
 - name: create datasets
   zfs:
-    name: '{{ item.zpool }}/{{ item.name }}'
+    name: '{{ item.pool }}/{{ item.name }}'
     state: present
-    extra_zfs_properties: '{{ item.props }}'
+    extra_zfs_properties: '{{ item.fs_props }}'
   loop: '{{ _zfs_datasets }}'

@@ -33,40 +33,54 @@ Example config (8 GiB):
 zfs_module_config_arc_max_gb: 8
 ```
 
-### zpools
+### Default pool and filesystem properties
 
-Set default zpool props (used if not explicitely defined in `zpool.props`):
+Set default pool props (used if not explicitely defined in `pool.pool_props`):
 
 ```yaml
-zfs_zpool_props:
-  - autoexpand=on
+zfs_pool_props:
+  autoexpand: 'on'
 ```
 
-Create 3 zpools (zp0, zp1, mypool):
+Set default filesystem props (used if not explicitely defined in `[pool|dataset].fs_props`):
 
 ```yaml
-zfs_zpools:
-  - config: raidz2 sda sdb sdc sdd
-  - config: sde sdf
-    props:
-      - autoexpand=on
-      - autoreplace=on
-  - name: mypool
-    config: mirror sdg sdh mirror sdi sdj
-    ashift: 12
-```
-
-### datasets
-
-Set default dataset props (used if not explicitely defined in `dataset.props`):
-
-```yaml
-zfs_dataset_props:
-  atime: off
-  xattr: off
+zfs_fs_props:
+  atime: 'off'
+  xattr: 'off'
   compression: lz4
   recordsize: 8k
 ```
+
+### pools
+
+Note: `pool_props` and `fs_props` are applied to pools only during initial creation.
+
+Create 3 pools (zp0, zp1, mypool):
+
+```yaml
+zfs_pools:
+  - config: raidz2 sda sdb sdc sdd
+  - config: >-
+      mirror sde sdf
+      mirror sdg sdh
+      log mirror sdi sdj
+      cache sdk sdl
+      special mirror sdm sdn
+      spare sdo
+    pool_props:
+      autoexpand: 'on'
+      autoreplace: 'on'
+    fs_props:
+      compression: lz4
+      recordsize: 32k
+  - name: mypool
+    config: mirror sdg sdh mirror sdi sdj
+    ashift: 12
+    mount: /var/opt/mypool
+```
+
+### datasets
 
 Create 3 datasets (on zp0, zp1 and mypool):
 
@@ -75,12 +89,12 @@ zfs_datasets:
   - name: zfs0
     mount: /var/opt/zfs0
   - name: zfs1
-    zpool: zp1
+    pool: zp1
     mount: /var/opt/zfs1
-    props:
+    fs_props:
       compression: lz4
       recordsize: 128k
   - name: myzfs
-    zpool: mypool
+    pool: mypool
     mount: /var/opt/myzfs
 ```
