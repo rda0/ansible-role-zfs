@@ -32,7 +32,7 @@ zfs_pools: []
 
 zfs_datasets: []
 #  - name: zfs0                             (required)
-#    zpool: zp0                             (required if not zp0)
+#    pool: zp0                              (required if not zp0)
 #    mount: /var/opt/zfs0                   (required)
 #    fs_props: '{{ zfs_fs_props }}'
 
