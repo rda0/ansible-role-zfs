@@ -8,4 +8,8 @@
       tags: zfs_config
       when: import_zfs_config
 
+    - import_tasks: monitoring.yml
+      tags: zfs_monitoring
+      when: import_zfs_monitoring
+
   tags: zfs

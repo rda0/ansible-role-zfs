@@ -1,0 +1,21 @@
+- name: deploy zfs xymon checks
+  copy:
+    src: "xymon_client/{{ item }}"
+    dest: "/usr/lib/xymon/client/ext/{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+  notify: restart xymon-client
+  loop:
+    - zpool.py
+
+- name: deploy zfs xymon config
+  template:
+    src: "xymon_client/{{ item }}"
+    dest: "/etc/xymon/clientlaunch.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart xymon-client
+  loop:
+    - zpool.cfg

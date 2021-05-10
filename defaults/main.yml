@@ -1,5 +1,6 @@
 import_zfs_install: True
 import_zfs_config: True
+import_zfs_monitoring: True
 
 # In GiB, `0` uses the default (1/2 of ram)
 zfs_module_config_arc_max_gb: 0
@@ -35,6 +36,9 @@ zfs_datasets: []
 #    pool: zp0                              (required if not zp0)
 #    mount: /var/opt/zfs0                   (required)
 #    fs_props: '{{ zfs_fs_props }}'
+
+# extra parameters for xymon checks
+zfs_monitoring_zpool_parameters: ''
 
 # Internal variables
 _zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb*1024**3)|int|abs }}'
