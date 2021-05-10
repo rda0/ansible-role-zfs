@@ -49,7 +49,7 @@ zfs_fs_props:
   atime: 'off'
   xattr: 'off'
   compression: lz4
-  recordsize: 8k
+  recordsize: 8K
 ```
 
 ### pools
@@ -73,7 +73,7 @@ zfs_pools:
       autoreplace: 'on'
     fs_props:
       compression: lz4
-      recordsize: 32k
+      recordsize: 32K
   - name: mypool
     config: mirror sdg sdh mirror sdi sdj
     ashift: 12
@@ -93,7 +93,7 @@ zfs_datasets:
     mount: /var/opt/zfs1
     fs_props:
       compression: lz4
-      recordsize: 128k
+      recordsize: 128K
   - name: myzfs
     pool: mypool
     mount: /var/opt/myzfs
