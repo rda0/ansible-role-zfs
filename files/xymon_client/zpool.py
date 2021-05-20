@@ -37,7 +37,14 @@ def check_vdev(state, strict):
         color = pymon.STATUS_CRITICAL
     return color
 
-
+def check_capacity(capacity, warn, crit):
+    if capacity < warn:
+        color = pymon.STATUS_OK
+    elif capacity < crit:
+        color = pymon.STATUS_WARNING
+    else:
+        color = pymon.STATUS_CRITICAL
+    return color
 
 def run_check():
     xymon = pymon.XymonClient(CHECK_NAME)
@@ -52,6 +59,8 @@ def run_check():
     parser = OptionParser()
     parser.add_option("--strict", action="store_true", dest="strict", default=False, help="enable strict mode (DEGRADED/OFFLINE => red)")
     parser.add_option("--pool", dest="zpool", metavar="ZPOOL", help="only check POOL")
+    parser.add_option("--warn", dest="capacity_warn", type="int", default=70, metavar="WARN", help="warn if usage > WARN")
+    parser.add_option("--crit", dest="capacity_crit", type="int", default=80, metavar="CRIT", help="crit if usage > CRIT")
     (options, args) = parser.parse_args()
 
     xymon.color = pymon.STATUS_OK # default
@@ -78,10 +87,20 @@ def run_check():
             xymon.color = pymon.STATUS_CRITICAL
             break
 
+        try:
+            capacity = int(run_command(["zpool", "list", "-Hp", "-o", "capacity", pool]).strip())
+        except:
+            xymon.section('zpool {}'.format(pool), "Cannot retrieve zpool capacity")
+            xymon.color = pymon.STATUS_CRITICAL
+            break
+
         pool_state = regex.search(data).group().strip()
 
         vdev_color = check_vdev(pool_state, options.strict)
         xymon.color = vdev_color  # update color if necessary
+
+        capacity_color = check_capacity(capacity, options.capacity_warn, options.capacity_crit)
+        content.append("{} zpool usage: {}%".format(capacity_color, capacity))
         content.append("{} zpool status: {}".format(vdev_color, pool_state))
 
         # read output line by line and loook for vdev info lines
