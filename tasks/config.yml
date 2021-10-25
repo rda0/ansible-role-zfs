@@ -71,3 +71,28 @@
     extra_zfs_properties: '{{ item.fs_props }}'
   loop: '{{ _zfs_datasets }}'
   ignore_errors: '{{ ansible_check_mode }}'
+
+- name: set fact _zfs_blockdevices
+  set_fact:
+    _zfs_blockdevices: "{{ _zfs_blockdevices + [_zfs_blockdevice] }}"
+  vars:
+    _zfs_blockdevice:
+      name: '{{ item.name }}'
+      pool: '{{ item.pool|default(zfs_pool_prefix + 0|string) }}'
+      size: '{{ item.size }}'
+      zfs_options: '{{ item.zfs_options | default({}) | combine({"volsize" : item.size }) }}'
+      filesystem: '{{ item.filesystem | default("none") }}'
+      fs_options: '{{ item.fs_options | default([]) }}'
+  loop: '{{ zfs_blockdevices }}'
+  loop_control:
+    extended: yes
+    label: "{{ item.name }}"
+
+- name: debug _zfs_blockdevices
+  debug:
+    msg: "{{ _zfs_blockdevices }}"
+
+- name: create blockdevices
+  include_tasks: create_blockdevice.yml
+  loop: "{{ _zfs_blockdevices }}"
+

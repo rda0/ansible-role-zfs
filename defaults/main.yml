@@ -37,6 +37,16 @@ zfs_datasets: []
 #    mount: /var/opt/zfs0                   (required)
 #    fs_props: '{{ zfs_fs_props }}'
 
+zfs_blockdevices: []
+#  - name: 'vol01'            (required)
+#    size: 10G                (required)
+#    pool: 'zp0'              (required if not zp0)
+#    zfs_options:         
+#      volblocksize: 64K
+#    filesystem: xfs
+#    fs_options:
+#      ["-b size=2k", "-i maxpct=0" ]
+
 # extra parameters for xymon checks
 zfs_monitoring_zpool_parameters: ''
 
@@ -45,3 +55,5 @@ _zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb*1024**3)|int|abs }
 _zfs_apt_include_backports: '{{ apt_include_backports|default(False) }}'
 _zfs_pools: []
 _zfs_datasets: []
+_zfs_blockdevices: []
+_zfs_existing_blockdevices: []

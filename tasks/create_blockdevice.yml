@@ -1,0 +1,38 @@
+- name: reset list of existing zfs block devices
+  set_fact:
+    _zfs_existing_blockdevices: []
+
+- name: gather existing zfs block devices in zpool {{ item.pool }}
+  zfs_facts:
+    name: '{{ item.pool }}'
+    type: volume
+    recurse: yes
+
+- name: create list of existing zfs block devices
+  set_fact:
+    _zfs_existing_blockdevices: "{{ _zfs_existing_blockdevices + [ vol.name ] }}"
+  loop: "{{ ansible_zfs_datasets }}"
+  loop_control:
+    loop_var: vol
+  no_log: true
+
+- name: debug _zfs_existing_blockdevices
+  debug:
+    msg: "{{_zfs_existing_blockdevices }}"  
+
+- name: create zfs block device {{ item.pool }}/{{ item.name }}
+  zfs:
+    name: '{{ item.pool }}/{{ item.name }}'
+    state: present
+    extra_zfs_properties: '{{ item.zfs_options }}'
+  when:
+    item.pool+"/"+item.name not in _zfs_existing_blockdevices
+
+- name: create  file system ({{ item.filesystem }}) on zfs block device {{ item.pool }}/{{ item.name }}
+  filesystem:
+    fstype: "{{ item.filesystem }}"
+    dev: "/dev/{{ item.pool }}/{{ item.name }}"
+    opts: "{{ item.fs_options | join(' ')}}"
+    force: no
+    resizefs: no
+  when: item.filesystem != "none"

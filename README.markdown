@@ -98,3 +98,22 @@ zfs_datasets:
     pool: mypool
     mount: /var/opt/myzfs
 ```
+
+### ZFS Block Devices
+
+
+```yaml
+zfs_blockdevices:             # list of ZFS block device descriptions 
+  - name: 'vol01'             # mandatory: -> $pool/$name
+    size: 10G                 # mandatory: volume size
+    pool: 'zp0'               # optional: defaults to zp0
+    zfs_options:              # optional: dictionary with zfs options 
+      volblocksize: 64K
+      refreservation: none
+      reservation: none
+    filesystem: xfs           # optional: create a filesystem
+    fs_options:               # optional: parameters for mkfs.$fs
+     ["-b size=2k", "-i maxpct=0", "-l internal,size=32768b,version=2", "-n size=8k,version=2" ]
+  - name: 'vol02'             # minimal config
+    size: 2G
+```
