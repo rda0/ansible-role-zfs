@@ -18,7 +18,7 @@
 
 - name: debug _zfs_existing_blockdevices
   debug:
-    msg: "{{_zfs_existing_blockdevices }}"  
+    msg: "{{ _zfs_existing_blockdevices }}"
 
 - name: create zfs block device {{ item.pool }}/{{ item.name }}
   zfs:
@@ -32,7 +32,7 @@
   filesystem:
     fstype: "{{ item.filesystem }}"
     dev: "/dev/{{ item.pool }}/{{ item.name }}"
-    opts: "{{ item.fs_options | join(' ')}}"
+    opts: "{{ item.fs_options | join(' ') }}"
     force: no
     resizefs: no
   when: item.filesystem != "none"
