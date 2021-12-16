@@ -41,7 +41,7 @@ zfs_blockdevices: []
 #  - name: 'vol01'            (required)
 #    size: 10G                (required)
 #    pool: 'zp0'              (required if not zp0)
-#    zfs_options:         
+#    zfs_options:
 #      volblocksize: 64K
 #    filesystem: xfs
 #    fs_options:
