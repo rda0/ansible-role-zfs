@@ -6,7 +6,7 @@
 - name: check for backports
   fail:
     msg: 'Enable backports in apt role'
-  when: ansible_distribution_release == 'buster' and _zfs_apt_include_backports == False
+  when: ansible_distribution_release == 'buster' and not _zfs_apt_include_backports
 
 - name: configure backports
   template:
