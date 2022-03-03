@@ -26,7 +26,7 @@ def run_command(command):
 
 CHECK_NAME = 'zpool'
 CHECK_VERSION = 1.0
-CHECK_LIFETIME = 5
+CHECK_LIFETIME = 60
 
 def check_vdev(state, strict):
     if state == "ONLINE" or (state == "OFFLINE" and not strict):
