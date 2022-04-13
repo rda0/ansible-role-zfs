@@ -49,6 +49,7 @@ zfs_blockdevices: []
 
 # extra parameters for xymon checks
 zfs_monitoring_zpool_parameters: ''
+zfs_monitoring_zfs_parameters: ''
 
 # Internal variables
 _zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb*1024**3)|int|abs }}'

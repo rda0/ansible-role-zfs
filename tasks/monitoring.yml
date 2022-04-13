@@ -8,6 +8,7 @@
   notify: restart xymon-client
   loop:
     - zpool.py
+    - zfs.py
 
 - name: deploy zfs xymon config
   template:
@@ -19,3 +20,4 @@
   notify: restart xymon-client
   loop:
     - zpool.cfg
+    - zfs.cfg
