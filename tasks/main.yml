@@ -1,4 +1,5 @@
-- block:
+- name: tags-block
+  block:
 
   - import_tasks: install.yml
     tags: zfs_install
