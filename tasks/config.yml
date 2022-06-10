@@ -29,16 +29,16 @@
     _zfs_pools: "{{ _zfs_pools + [_zfs_pool] }}"
   vars:
     _zfs_pool:
-      name: '{{ item.name|default(zfs_pool_prefix + ansible_loop.index0|string) }}'
-      ashift: '{{ item.ashift|default(zfs_pool_ashift) }}'
-      pool_props: '{{ item.pool_props|default(zfs_pool_props) }}'
-      fs_props: '{{ item.fs_props|default(zfs_fs_props) }}'
-      mount: "{{ item.mount|default('none') }}"
+      name: '{{ item.name | default(zfs_pool_prefix + ansible_loop.index0 | string) }}'
+      ashift: '{{ item.ashift | default(zfs_pool_ashift) }}'
+      pool_props: '{{ item.pool_props | default(zfs_pool_props) }}'
+      fs_props: '{{ item.fs_props | default(zfs_fs_props) }}'
+      mount: "{{ item.mount | default('none') }}"
       config: '{{ item.config }}'
   loop: '{{ zfs_pools }}'
   loop_control:
     extended: yes
-    label: "{{ item.name|default(zfs_pool_prefix + ansible_loop.index0|string) }}"
+    label: "{{ item.name | default(zfs_pool_prefix + ansible_loop.index0 | string) }}"
 
 - name: debug _zfs_pools
   debug:
@@ -56,8 +56,8 @@
   vars:
     _zfs_dataset:
       name: '{{ item.name }}'
-      pool: '{{ item.pool|default(zfs_pool_prefix + 0|string) }}'
-      fs_props: "{{ (item.fs_props|default(zfs_fs_props))|combine({'mountpoint':item.mount|default('none')}) }}"
+      pool: '{{ item.pool | default(zfs_pool_prefix + 0 | string) }}'
+      fs_props: "{{ (item.fs_props | default(zfs_fs_props)) | combine({'mountpoint':item.mount | default('none')}) }}"
   loop: '{{ zfs_datasets }}'
   loop_control:
     extended: yes
@@ -81,7 +81,7 @@
   vars:
     _zfs_blockdevice:
       name: '{{ item.name }}'
-      pool: '{{ item.pool|default(zfs_pool_prefix + 0|string) }}'
+      pool: '{{ item.pool | default(zfs_pool_prefix + 0 | string) }}'
       size: '{{ item.size }}'
       zfs_options: '{{ item.zfs_options | default({}) | combine({"volsize" : item.size }) }}'
       filesystem: '{{ item.filesystem | default("none") }}'
