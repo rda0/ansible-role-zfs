@@ -2,14 +2,17 @@
   tags: zfs
   block:
 
-  - import_tasks: install.yml
-    tags: zfs_install
-    when: import_zfs_install
+    - name: import tasks from install.yml
+      import_tasks: install.yml
+      tags: zfs_install
+      when: import_zfs_install
 
-  - import_tasks: config.yml
-    tags: zfs_config
-    when: import_zfs_config
+    - name: import tasks from config.yml
+      import_tasks: config.yml
+      tags: zfs_config
+      when: import_zfs_config
 
-  - import_tasks: monitoring.yml
-    tags: zfs_monitoring
-    when: import_zfs_monitoring
+    - name: import tasks from monitoring.yml
+      import_tasks: monitoring.yml
+      tags: zfs_monitoring
+      when: import_zfs_monitoring
