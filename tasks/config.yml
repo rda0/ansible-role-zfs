@@ -58,7 +58,7 @@
     _zfs_dataset:
       name: '{{ item.name }}'
       pool: '{{ item.pool | default(zfs_pool_prefix + 0 | string) }}'
-      fs_props: "{{ (item.fs_props | default(zfs_fs_props)) | combine({'mountpoint':item.mount | default('none')}) }}"
+      fs_props: "{{ (item.fs_props | default(zfs_fs_props)) | combine({'mountpoint': item.mount | default('none')}) }}"
   loop: '{{ zfs_datasets }}'
   loop_control:
     extended: yes
@@ -84,7 +84,7 @@
       name: '{{ item.name }}'
       pool: '{{ item.pool | default(zfs_pool_prefix + 0 | string) }}'
       size: '{{ item.size }}'
-      zfs_options: '{{ item.zfs_options | default({}) | combine({"volsize" : item.size }) }}'
+      zfs_options: '{{ item.zfs_options | default({}) | combine({"volsize": item.size}) }}'
       filesystem: '{{ item.filesystem | default("none") }}'
       fs_options: '{{ item.fs_options | default([]) }}'
   loop: '{{ zfs_blockdevices }}'

@@ -52,7 +52,7 @@ zfs_monitoring_zpool_parameters: ''
 zfs_monitoring_zfs_parameters: ''
 
 # Internal variables
-_zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb*1024**3) | int | abs }}'
+_zfs_module_config_arc_max: '{{ (zfs_module_config_arc_max_gb * 1024**3) | int | abs }}'
 _zfs_apt_include_backports: '{{ apt_include_backports | default(False) }}'
 _zfs_pools: []
 _zfs_datasets: []
