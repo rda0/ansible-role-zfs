@@ -45,8 +45,7 @@
     msg: "{{ _zfs_pools }}"
 
 - name: create pools
-  command:
-    cmd: 'zpool create -o ashift={{ item.ashift }}{% for k, v in item.pool_props.items() %} -o {{ k }}={{ v }}{% endfor %}{% for k, v in item.fs_props.items() %} -O {{ k }}={{ v }}{% endfor %} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
+  command: 'zpool create -o ashift={{ item.ashift }}{% for k, v in item.pool_props.items() %} -o {{ k }}={{ v }}{% endfor %}{% for k, v in item.fs_props.items() %} -O {{ k }}={{ v }}{% endfor %} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
   args:
     creates: '/proc/spl/kstat/zfs/{{ item.name }}/state'
   loop: '{{ _zfs_pools }}'
