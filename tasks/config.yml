@@ -21,7 +21,7 @@
     state: present
 
 - name: apply zfs module options at runtime
-  command: 'echo "{{ _zfs_module_config_arc_max }}" > /sys/module/zfs/parameters/zfs_arc_max'
+  shell: 'echo "{{ _zfs_module_config_arc_max }}" > /sys/module/zfs/parameters/zfs_arc_max'
   when: _zfs_task_configure_zfs_module_options.changed or _zfs_task_cleanup_zfs_module_options.changed
 
 - name: set fact _zfs_pools
