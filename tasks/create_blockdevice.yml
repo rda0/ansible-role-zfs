@@ -3,7 +3,7 @@
     _zfs_existing_blockdevices: []
 
 - name: gather existing zfs block devices in zpool {{ item.pool }}
-  zfs_facts:
+  community.general.zfs_facts:
     name: '{{ item.pool }}'
     type: volume
     recurse: yes
@@ -21,7 +21,7 @@
     msg: "{{ _zfs_existing_blockdevices }}"
 
 - name: create zfs block device {{ item.pool }}/{{ item.name }}
-  zfs:
+  community.general.zfs:
     name: '{{ item.pool }}/{{ item.name }}'
     state: present
     extra_zfs_properties: '{{ item.zfs_options }}'
@@ -29,7 +29,7 @@
     item.pool+"/"+item.name not in _zfs_existing_blockdevices
 
 - name: create  file system ({{ item.filesystem }}) on zfs block device {{ item.pool }}/{{ item.name }}
-  filesystem:
+  community.general.filesystem:
     fstype: "{{ item.filesystem }}"
     dev: "/dev/{{ item.pool }}/{{ item.name }}"
     opts: "{{ item.fs_options | join(' ') }}"

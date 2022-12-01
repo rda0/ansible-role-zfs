@@ -16,7 +16,7 @@
   register: _zfs_task_cleanup_zfs_module_options
 
 - name: modprobe zfs
-  modprobe:
+  community.general.modprobe:
     name: zfs
     state: present
 
@@ -71,7 +71,7 @@
     msg: "{{ _zfs_datasets }}"
 
 - name: create datasets
-  zfs:
+  community.general.zfs:
     name: '{{ item.pool }}/{{ item.name }}'
     state: present
     extra_zfs_properties: '{{ item.fs_props }}'
