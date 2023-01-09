@@ -30,7 +30,7 @@
 
 - name: create  file system ({{ item.filesystem }}) on zfs block device {{ item.pool }}/{{ item.name }}
   community.general.filesystem:
-    fstype: "{{ item.filesystem }}"
+    fstype: "{{ item.filesystem }}"  # noqa args[module]
     dev: "/dev/{{ item.pool }}/{{ item.name }}"
     opts: "{{ item.fs_options | join(' ') }}"
     force: no
