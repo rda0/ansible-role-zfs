@@ -6,7 +6,6 @@ Installs zfs, configures zfs pools and file systems.
 Installation
 ------------
 
-- Debian buster: builds zfs-dkms using backports
 - Debian bullseye: builds zfs-dkms using stable
 - Ubuntu: uses the shipped version
 
