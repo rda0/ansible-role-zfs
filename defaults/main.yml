@@ -9,6 +9,8 @@ zfs_module_config_scan_mem_lim_fact: 20
 
 zfs_pool_prefix: zp
 zfs_pool_ashift: 13
+zfs_pool_import: True
+zfs_pool_import_command: 'zpool import'
 
 # pool properties defaults
 zfs_pool_props: {}
@@ -32,6 +34,7 @@ zfs_pools: []
 #    config: mirror sda sdb mirror sdc sdd  (required)
 #    pool_props: '{{ zfs_pool_props }}'
 #    fs_props: '{{ zfs_fs_props }}'
+#    import: 'zpool import <item.name>'
 
 zfs_datasets: []
 #  - name: zfs0                             (required)

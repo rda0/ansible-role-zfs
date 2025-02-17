@@ -38,6 +38,7 @@
       fs_props: '{{ item.fs_props | default(zfs_fs_props) }}'
       mount: "{{ item.mount | default('none') }}"
       config: '{{ item.config }}'
+      import: '{{ zfs_pool_import_command }} {{ item.name | default(zfs_pool_prefix + ansible_loop.index0 | string) }}'
   loop: '{{ zfs_pools }}'
   loop_control:
     extended: yes
@@ -47,10 +48,24 @@
   debug:
     msg: "{{ _zfs_pools }}"
 
+- name: import pools
+  shell: '{{ item.import }}'
+  args:
+    creates: '/proc/spl/kstat/zfs/{{ item.name }}/state'
+  ignore_errors: True  # noqa ignore-errors
+  when: zfs_pool_import
+  loop: '{{ _zfs_pools }}'
+  #register: zfs_pool_import_register
+
+#- name: debug zfs_pool_import_register
+#  debug:
+#    msg: "{{ zfs_pool_import_register }}"
+
 - name: create pools
   command: 'zpool create -o ashift={{ item.ashift }}{% for k, v in item.pool_props.items() %} -o {{ k }}={{ v }}{% endfor %}{% for k, v in item.fs_props.items() %} -O {{ k }}={{ v }}{% endfor %} -m {{ item.mount }} {{ item.name }} {{ item.config }}'
   args:
     creates: '/proc/spl/kstat/zfs/{{ item.name }}/state'
+  #when: zfs_pool_import_register.results[ansible_loop.index0].changed | default(False) == False
   loop: '{{ _zfs_pools }}'
 
 - name: set fact _zfs_datasets

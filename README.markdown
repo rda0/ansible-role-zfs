@@ -3,13 +3,15 @@ zfs
 
 Installs zfs, configures zfs pools and file systems.
 
+
 Installation
 ------------
 
 - Debian bullseye: builds zfs-dkms using stable
 - Ubuntu: uses the shipped version
+- By default the role first tries to import pools (i.e. during re-installation) and otherwise create the pools
+- If `modprobe zfs` fails, a reboot into the uptodate kernel may be needed.
 
-If `modprobe zfs` fails, a reboot into the uptodate kernel may be needed.
 
 Configuration
 -------------
@@ -73,10 +75,21 @@ zfs_pools:
     fs_props:
       compression: lz4
       recordsize: 32K
+    import: 'rm /dev/disk/by-id/wwn-*; zpool import -d /dev/disk/by-id'  # custom import. `zp1` is automatically added
   - name: mypool
     config: mirror sdg sdh mirror sdi sdj
     ashift: 12
     mount: /var/opt/mypool
+```
+
+### import
+
+For each pool the role first tries to import the pool. Any pools that failed to import will be created.
+A custom `zfs_pool.import` command as shown above may provide better control over the used disk ids if necessary.
+The default `zfs_pool_import_command: 'zpool import'` will result in:
+
+```bash
+zpool import <pool>
 ```
 
 ### datasets
@@ -102,11 +115,11 @@ zfs_datasets:
 
 
 ```yaml
-zfs_blockdevices:             # list of ZFS block device descriptions 
+zfs_blockdevices:             # list of ZFS block device descriptions
   - name: 'vol01'             # mandatory: -> $pool/$name
     size: 10G                 # mandatory: volume size
     pool: 'zp0'               # optional: defaults to zp0
-    zfs_options:              # optional: dictionary with zfs options 
+    zfs_options:              # optional: dictionary with zfs options
       volblocksize: 64K
       refreservation: none
       reservation: none
