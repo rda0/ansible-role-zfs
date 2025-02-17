@@ -4,6 +4,18 @@ zfs
 Installs zfs, configures zfs pools and file systems.
 
 
+Bugs
+----
+
+Ansible bug: in check mode it may incorrectly show a diff:
+
+```diff
+ extra_zfs_properties:
+-  recordsize: '131072'
++  recordsize: 128K
+```
+
+
 Installation
 ------------
 
