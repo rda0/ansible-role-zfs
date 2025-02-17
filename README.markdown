@@ -19,10 +19,12 @@ Ansible bug: in check mode it may incorrectly show a diff:
 Installation
 ------------
 
-- Debian bullseye: builds zfs-dkms using stable
+- Debian: builds zfs-dkms using stable
 - Ubuntu: uses the shipped version
-- By default the role first tries to import pools (i.e. during re-installation) and otherwise create the pools
 - If `modprobe zfs` fails, a reboot into the uptodate kernel may be needed.
+- By default the role first tries to import pools (i.e. during re-installation) and otherwise create the pools
+- To cleanly reinstall a machine: export pools beforehand using: `zpool export <pool>`
+- If the pool export was forgotten the force may be with you: `-e '{"zfs_pool_import_command":"zpool import -f"}'`
 
 
 Configuration
