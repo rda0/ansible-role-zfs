@@ -55,7 +55,8 @@ def run_check():
     xymon.lifetime = CHECK_LIFETIME
 
     regex = re.compile(r'(?<=state:).*')
-    head = re.compile(r'\s*NAME\s*STATE\s*READ\s*WRITE\s*CKSUM')
+    # detect lines containing header or "cache"
+    head = re.compile(r'(\s*NAME\s*STATE\s*READ\s*WRITE\s*CKSUM|\s*cache\s*)')
     zpool = None
 
     parser = OptionParser()
@@ -119,9 +120,9 @@ def run_check():
 
             # name, state, read_err, write_err, check_sum
             vdev_info = line.split()
-
             vdev_color = check_vdev(vdev_info[1], options.strict)
             xymon.color = vdev_color  # update color if necessary
+
             content.append("  {} {} status: {}".format(vdev_color, vdev_info[0], vdev_info[1]))
 
             if vdev_info[2] != "0":
