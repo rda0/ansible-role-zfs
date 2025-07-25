@@ -1,1 +1,1 @@
-options zfs zfs_arc_max={{ _zfs_module_config_arc_max }} zfs_scan_mem_lim_fact={{ zfs_module_config_scan_mem_lim_fact }}
+options zfs zfs_arc_max={{ _zfs_module_config_arc_max }}{% if zfs_module_config_scan_mem_lim_fact != 20 %} zfs_scan_mem_lim_fact={{ zfs_module_config_scan_mem_lim_fact }}{% endif %}{{ '' }}
