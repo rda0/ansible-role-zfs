@@ -92,6 +92,7 @@
     extra_zfs_properties: '{{ item.fs_props }}'
   loop: '{{ _zfs_datasets }}'
   ignore_errors: '{{ ansible_check_mode }}'
+  changed_when: zfs_datasets_changed_when  # workaround variable for ansible bug in check mode
 
 - name: set fact _zfs_blockdevices
   set_fact:

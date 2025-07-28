@@ -36,6 +36,7 @@ zfs_pools: []
 #    fs_props: '{{ zfs_fs_props }}'
 #    import: 'zpool import <item.name>'
 
+zfs_datasets_changed_when: omit  # workaround variable for ansible bug in check mode
 zfs_datasets: []
 #  - name: zfs0                             (required)
 #    pool: zp0                              (required if not zp0)
