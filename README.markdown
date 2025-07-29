@@ -15,6 +15,8 @@ Ansible bug: in check mode it may incorrectly show a diff:
 +  recordsize: 128K
 ```
 
+The only way it does not show diff is using: `recordsize: '131072'` (as quoted string).
+
 
 Installation
 ------------
