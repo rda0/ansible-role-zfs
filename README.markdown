@@ -7,7 +7,7 @@ Installs zfs, configures zfs pools and file systems.
 Bugs
 ----
 
-Ansible bug: in check mode it may incorrectly show a diff:
+Ansible bug: in check mode it may incorrectly show a diff when using yaml config `recordsize: 128K`:
 
 ```diff
  extra_zfs_properties:
@@ -15,7 +15,7 @@ Ansible bug: in check mode it may incorrectly show a diff:
 +  recordsize: 128K
 ```
 
-The only way it does not show diff is using: `recordsize: '131072'` (as quoted string).
+The only way it does not show diff is using yaml config `recordsize: '131072'` (using bytes as quoted string).
 
 
 Installation
@@ -66,7 +66,7 @@ zfs_fs_props:
   atime: 'off'
   xattr: 'off'
   compression: lz4
-  recordsize: 8K
+  recordsize: '8192'  # 8K
 ```
 
 ### pools
@@ -90,7 +90,7 @@ zfs_pools:
       autoreplace: 'on'
     fs_props:
       compression: lz4
-      recordsize: 32K
+      recordsize: '32768'  # 32K
     import: 'rm /dev/disk/by-id/wwn-*; zpool import -d /dev/disk/by-id'  # custom import. `zp1` is automatically added
   - name: mypool
     config: mirror sdg sdh mirror sdi sdj
@@ -121,7 +121,7 @@ zfs_datasets:
     mount: /var/opt/zfs1
     fs_props:
       compression: lz4
-      recordsize: 128K
+      recordsize: '131072'  # 128K
   - name: myzfs
     pool: mypool
     mount: /var/opt/myzfs

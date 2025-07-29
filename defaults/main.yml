@@ -25,7 +25,7 @@ zfs_fs_props: {}
 #  atime: 'off'
 #  xattr: 'off'
 #  compression: lz4
-#  recordsize: 8K
+#  recordsize: '8192'  # 8K
 
 zfs_pools: []
 #  - name: zp0
