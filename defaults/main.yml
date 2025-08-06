@@ -1,3 +1,4 @@
+role_zfs: True
 import_zfs_install: True
 import_zfs_config: True
 import_zfs_monitoring: True

@@ -1,5 +1,6 @@
 - name: tags-block
   tags: zfs
+  when: role_zfs
   block:
 
     - name: import tasks from install.yml
