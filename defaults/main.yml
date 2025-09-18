@@ -7,6 +7,8 @@ import_zfs_monitoring: True
 zfs_module_config_arc_max_gb: 0
 # In fraction of total memory, `20` uses the default (1/20 of ram)
 zfs_module_config_scan_mem_lim_fact: 20
+# Cron time in `m h` when trims or scrubs should run on some Syndays instead of at 00:24
+zfs_cron_trim_scrub_time: '24 5'
 
 zfs_pool_prefix: zp
 zfs_pool_ashift: 13

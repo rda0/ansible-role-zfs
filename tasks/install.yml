@@ -14,3 +14,21 @@
 - name: install zfs
   package:
     pkg: zfsutils-linux
+
+- name: Override cronjob time of trim
+  lineinfile:
+    path: /etc/cron.d/zfsutils-linux
+    regexp: '[0-9]+ [0-9]+ 1-7 \* \* root if \[ \$\(date \+\\%w\) -eq 0 \] && \[ -x /usr/lib/zfs-linux/trim \]; then /usr/lib/zfs-linux/trim; fi'
+    line: '{{ zfs_cron_trim_scrub_time }} 1-7 * * root if [ $(date +\%w) -eq 0 ] && [ -x /usr/lib/zfs-linux/trim ]; then /usr/lib/zfs-linux/trim; fi'
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Override cronjob time of scrub
+  lineinfile:
+    path: /etc/cron.d/zfsutils-linux
+    regexp: '[0-9]+ [0-9]+ 8-14 \* \* root if \[ \$\(date \+\\%w\) -eq 0 \] && \[ -x /usr/lib/zfs-linux/scrub \]; then /usr/lib/zfs-linux/scrub; fi'
+    line: '{{ zfs_cron_trim_scrub_time }} 8-14 * * root if [ $(date +\%w) -eq 0 ] && [ -x /usr/lib/zfs-linux/scrub ]; then /usr/lib/zfs-linux/scrub; fi'
+    owner: root
+    group: root
+    mode: '0644'
