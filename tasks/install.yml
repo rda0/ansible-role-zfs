@@ -4,12 +4,12 @@
       - dpkg-dev
       - linux-headers-amd64
       - linux-image-amd64
-  when: ansible_distribution|lower == 'debian'
+  when: ansible_facts.distribution|lower == 'debian'
 
 - name: install zfs-dkms debian
   package:
     pkg: zfs-dkms
-  when: ansible_distribution|lower == 'debian'
+  when: ansible_facts.distribution|lower == 'debian'
 
 - name: install zfs
   package:

@@ -11,7 +11,7 @@
 - name: create list of existing zfs block devices
   set_fact:
     _zfs_existing_blockdevices: "{{ _zfs_existing_blockdevices + [vol.name] }}"
-  loop: "{{ ansible_zfs_datasets }}"
+  loop: "{{ ansible_facts.zfs_datasets }}"
   loop_control:
     loop_var: vol
   no_log: true
