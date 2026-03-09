@@ -56,7 +56,7 @@ def run_check():
     xymon.lifetime = CHECK_LIFETIME
 
     parser = OptionParser()
-    parser.add_option("--warn", dest="capacity_warn", type="int", default=75, metavar="WARN", help="warn if usage > WARN")
+    parser.add_option("--warn", dest="capacity_warn", type="int", default=80, metavar="WARN", help="warn if usage > WARN")
     parser.add_option("--crit", dest="capacity_crit", type="int", default=90, metavar="CRIT", help="crit if usage > CRIT")
     (options, args) = parser.parse_args()
 
